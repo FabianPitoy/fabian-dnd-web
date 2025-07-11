@@ -1,13 +1,15 @@
 // pages/api/ask.ts
-export default async function handler(req, res) {
+import type { NextApiRequest, NextApiResponse } from 'next';
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ error: 'Method Not Allowed' });
   }
-
   const { prompt } = req.body;
-  console.log('📨 Prompt diterima dari frontend:', prompt); // cek input masuk
-
-  const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY; // _tanpa_ NEXT_PUBLIC_
 
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
@@ -26,11 +28,5 @@ export default async function handler(req, res) {
   });
 
   const data = await response.json();
-  console.log('✅ Respons dari OpenAI:', data); // lihat isi respons
-
-  if (!data.choices || !data.choices.length) {
-    return res.status(500).json({ result: 'Tidak ada jawaban dari AI.' });
-  }
-
-  res.status(200).json({ result: data.choices[0].message.content });
+  res.status(200).json({ result: data.choices?.[0]?.message?.content || 'AI tidak merespon.' });
 }
