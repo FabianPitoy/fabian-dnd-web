@@ -1,29 +1,25 @@
+// components/ui/MenuOverlay.tsx
 import React from 'react';
 
-interface Props {
-  isOpen: boolean;
-  onClose: () => void;
-  children: React.ReactNode;
-  position: 'left' | 'right';
+interface MenuOverlayProps {
+  onSelect: (view: string) => void;
 }
 
-export const MenuOverlay: React.FC<Props> = ({ isOpen, onClose, children, position }) => {
-  if (!isOpen) return null;
-
+export function MenuOverlay({ onSelect }: MenuOverlayProps) {
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      [position]: 0,
-      height: '100vh',
-      width: '250px',
-      backgroundColor: '#111',
-      color: '#fff',
-      padding: '1rem',
-      zIndex: 1000
-    }}>
-      <button onClick={onClose} style={{ marginBottom: '1rem' }}>Tutup</button>
-      {children}
+    <div className="absolute top-4 left-4 z-50 space-x-2">
+      <button
+        onClick={() => onSelect('chat')}
+        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+      >
+        Chat
+      </button>
+      <button
+        onClick={() => onSelect('modul')}
+        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+      >
+        Modul
+      </button>
     </div>
   );
-};
+}
