@@ -1,8 +1,29 @@
-export function MenuOverlay({ onSelect }: { onSelect: (v: string) => void }) {
+import React from 'react';
+
+interface Props {
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+  position: 'left' | 'right';
+}
+
+export const MenuOverlay: React.FC<Props> = ({ isOpen, onClose, children, position }) => {
+  if (!isOpen) return null;
+
   return (
-    <div className="absolute top-0 right-0 m-4 space-x-2 z-40">
-      <button onClick={() => onSelect('chat')} className="bg-gray-800 px-3 py-1 rounded text-white">🧠 AI DM</button>
-      <button onClick={() => onSelect('modul')} className="bg-gray-800 px-3 py-1 rounded text-white">📦 Modul</button>
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      [position]: 0,
+      height: '100vh',
+      width: '250px',
+      backgroundColor: '#111',
+      color: '#fff',
+      padding: '1rem',
+      zIndex: 1000
+    }}>
+      <button onClick={onClose} style={{ marginBottom: '1rem' }}>Tutup</button>
+      {children}
     </div>
   );
-}
+};
