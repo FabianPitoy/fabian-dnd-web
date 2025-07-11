@@ -12,7 +12,7 @@ export function LoginScreen({ onSelectRole }: { onSelectRole: (r: any) => void }
       {/* Background */}
       <div
         className="absolute inset-0 bg-cover bg-center z-0 scale-105 blur-sm brightness-50"
-        sstyle={{
+        style={{
   backgroundImage: "url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80')"
 }}
       />
