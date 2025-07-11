@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
-export function Card({ children }: { children: React.ReactNode }) {
+interface CardProps {
+  children: ReactNode;
+  className?: string;
+}
+
+export function Card({ children, className = '' }: CardProps) {
   return (
-    <div style={{ border: '1px solid #444', padding: '1rem', borderRadius: '8px', backgroundColor: '#222' }}>
+    <div className={`p-4 bg-gray-800 rounded-lg shadow-md ${className}`}>
       {children}
     </div>
   );
