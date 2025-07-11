@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChatBox } from './ChatBox';
+import { ChatBox } from './ai/ChatBox';
 import { ModuleView } from './modules/ModuleView'; // <- pastikan path ini sesuai
 import { MenuOverlay } from './modules/MenuOverlay';
 
