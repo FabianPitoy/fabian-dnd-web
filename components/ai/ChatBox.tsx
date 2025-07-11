@@ -7,14 +7,21 @@ export function ChatBox() {
   const [messages, setMessages] = useState<string[]>([]);
 
   async function send() {
-    if (!input.trim()) return;
-    const newMessages = [...messages, `Player: ${input}`];
-    setMessages(newMessages);
-    setInput('');
+  if (!input.trim()) return;
 
-    const response = await askGPT(input);
-    setMessages([...newMessages, `DM: ${response}`]);
-  }
+  const newMessages = [...messages, `Player: ${input}`];
+  setMessages(newMessages);
+  setInput('');
+
+  console.log('[ChatBox] Mengirim prompt:', input); // Tambahkan ini
+
+  const response = await askGPT(input);
+
+  console.log('[ChatBox] Respon dari askGPT:', response); // Tambahkan ini
+
+  setMessages([...newMessages, `DM: ${response}`]);
+}
+
 
   return (
     <div className="p-4 space-y-2 max-w-xl mx-auto">
