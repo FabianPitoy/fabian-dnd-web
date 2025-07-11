@@ -6,9 +6,9 @@ export function ChatBox({ role }: { role: string }) {
   const [input, setInput] = useState('');
 
   async function sendMessage() {
-    const playerMessage = \`Player (\${role}): \${input}\`;
+    const playerMessage = `Player (${role}): ${input}`;
     const aiReply = await generateAIResponse(input);
-    setMessages(prev => [...prev, playerMessage, \`DM: \${aiReply}\`]);
+    setMessages(prev => [...prev, playerMessage, `DM: ${aiReply}`]);
     setInput('');
   }
 
