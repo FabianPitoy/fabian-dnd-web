@@ -12,4 +12,4 @@ export function MenuOverlay({ onSelect }: MenuOverlayProps) {
     </div>
   );
 }
-fix: add onSelect prop to MenuOverlay component
+
