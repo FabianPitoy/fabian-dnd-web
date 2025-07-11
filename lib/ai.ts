@@ -1,7 +1,20 @@
-export async function generateAIResponse(input: string): Promise<string> {
-  const lower = input.toLowerCase();
-  if (lower.includes('halo')) return 'Selamat datang, petualang.';
-  if (lower.includes('pergi')) return 'Kau melangkah ke jalanan berkabut...';
-  if (lower.includes('mira')) return 'Mira memandangmu dengan tatapan curiga, tapi tidak berkata apa-apa.';
-  return 'Aku tak yakin maksudmu. Bisa kau jelaskan lebih lanjut?';
+// lib/ai.ts
+export async function askGPT(prompt: string): Promise<string> {
+  const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+
+  const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: "gpt-4",
+      messages: [{ role: "system", content: "Kamu adalah Dungeon Master. Jawab dengan ringkas dan penuh imajinasi." }, { role: "user", content: prompt }],
+      temperature: 0.8,
+    }),
+  });
+
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content || "AI tidak merespon.";
 }
