@@ -1,18 +1,25 @@
-// components/MainInterface.tsx
+import React, { useState } from 'react';
+import { ChatBox } from './ChatBox';
+import { ModuleView } from './modules/ModuleView'; // <- pastikan path ini sesuai
+import { MenuOverlay } from './modules/MenuOverlay';
 
-import { useState } from 'react';
-import { MenuOverlay } from './ui/MenuOverlay';
-import { ChatBox } from './ai/ChatBox';
-import { ModuleView } from './modules/ModuleView';
+interface MainInterfaceProps {
+  role: 'player' | 'dm' | 'observer';
+}
 
-export function MainInterface({ role }: { role: string }) {
+export function MainInterface({ role }: MainInterfaceProps) {
   const [view, setView] = useState('chat');
+
+  const module = {
+    title: 'Petualangan Awal',
+    description: 'Selamat datang di dunia D&D ciptaanmu!',
+  };
 
   return (
     <div className="relative w-full h-full">
       <MenuOverlay onSelect={setView} />
       {view === 'chat' && <ChatBox role={role} />}
-      {view === 'modul' && <ModuleView />}
+      {view === 'modul' && <ModuleView module={module} />}
     </div>
   );
 }
