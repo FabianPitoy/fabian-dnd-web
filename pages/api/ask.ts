@@ -3,36 +3,46 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
+    return res.status(405).json({ error: 'Metode tidak diizinkan' });
   }
 
   const { prompt } = req.body;
-  const apiKey = process.env.OPENAI_API_KEY;
 
-  if (!apiKey) {
-    return res.status(500).json({ error: 'API key not configured' });
+  if (!prompt || typeof prompt !== 'string') {
+    return res.status(400).json({ error: 'Prompt tidak valid' });
   }
 
   try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
+    const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "gpt-4",
+        model: 'gpt-4',
         messages: [
-          { role: "system", content: "Kamu adalah Dungeon Master. Jawab dengan ringkas dan penuh imajinasi." },
-          { role: "user", content: prompt }
+          {
+            role: 'system',
+            content:
+              'Kamu adalah Dungeon Master dalam dunia Dungeons & Dragons. Buat cerita petualangan yang seru dan imajinatif. Berikan tanggapan menarik kepada pemain yang menuliskan aksinya.',
+          },
+          {
+            role: 'user',
+            content: prompt,
+          },
         ],
-        temperature: 0.8,
+        temperature: 0.9,
       }),
     });
 
-    const data = await response.json();
-    return res.status(200).json({ result: data.choices?.[0]?.message?.content || "Tidak ada respon." });
-  } catch (error) {
-    return res.status(500).json({ error: 'Gagal memanggil API OpenAI' });
+    const data = await openaiRes.json();
+
+    const result = data?.choices?.[0]?.message?.content || 'AI tidak merespon.';
+
+    res.status(200).json({ result });
+  } catch (err) {
+    console.error('Error dari OpenAI:', err);
+    res.status(500).json({ error: 'Gagal menghubungi AI' });
   }
 }
