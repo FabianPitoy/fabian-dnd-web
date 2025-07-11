@@ -1,13 +1,14 @@
+// components/ChatBox.tsx
 import { useState } from 'react';
 import { askGPT } from '@/lib/ai';
 
-export function ChatBox() {
+export function ChatBox({ role }: { role: 'player' | 'dm' | 'observer' }) {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<string[]>([]);
 
   async function send() {
     if (!input.trim()) return;
-    const newMessages = [...messages, `Player: ${input}`];
+    const newMessages = [...messages, `${role.toUpperCase()}: ${input}`];
     setMessages(newMessages);
     setInput('');
 
