@@ -1,49 +1,36 @@
 // pages/api/ask.ts
-console.log('📥 prompt diterima:', prompt);
-import type { NextApiRequest, NextApiResponse } from 'next';
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Metode tidak diizinkan' });
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const { prompt } = req.body;
+  console.log('📨 Prompt diterima dari frontend:', prompt); // cek input masuk
 
-  if (!prompt || typeof prompt !== 'string') {
-    return res.status(400).json({ error: 'Prompt tidak valid' });
+  const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: "gpt-4",
+      messages: [
+        { role: "system", content: "Kamu adalah Dungeon Master. Jawab dengan ringkas dan penuh imajinasi." },
+        { role: "user", content: prompt }
+      ],
+      temperature: 0.8,
+    }),
+  });
+
+  const data = await response.json();
+  console.log('✅ Respons dari OpenAI:', data); // lihat isi respons
+
+  if (!data.choices || !data.choices.length) {
+    return res.status(500).json({ result: 'Tidak ada jawaban dari AI.' });
   }
 
-  try {
-    const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-4',
-        messages: [
-          {
-            role: 'system',
-            content:
-              'Kamu adalah Dungeon Master dalam dunia Dungeons & Dragons. Buat cerita petualangan yang seru dan imajinatif. Berikan tanggapan menarik kepada pemain yang menuliskan aksinya.',
-          },
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
-        temperature: 0.9,
-      }),
-    });
-
-    const data = await openaiRes.json();
-
-    const result = data?.choices?.[0]?.message?.content || 'AI tidak merespon.';
-
-    res.status(200).json({ result });
-  } catch (err) {
-    console.error('Error dari OpenAI:', err);
-    res.status(500).json({ error: 'Gagal menghubungi AI' });
-  }
+  res.status(200).json({ result: data.choices[0].message.content });
 }
