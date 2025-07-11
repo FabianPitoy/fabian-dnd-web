@@ -1,6 +1,7 @@
 // lib/ai.ts
 export async function askGPT(prompt: string): Promise<string> {
-  console.log('🟨 prompt dikirim ke /api/ask:', prompt);
+  console.log('📤 Prompt dikirim ke /api/ask:', prompt); // log kirim
+
   const res = await fetch('/api/ask', {
     method: 'POST',
     headers: {
@@ -10,6 +11,7 @@ export async function askGPT(prompt: string): Promise<string> {
   });
 
   const data = await res.json();
-   console.log('🟩 respons dari /api/ask:', data);
+  console.log('📥 Response dari /api/ask:', data); // log terima
+
   return data.result || 'Tidak ada respon.';
 }
